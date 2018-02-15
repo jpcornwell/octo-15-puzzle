@@ -1,0 +1,59 @@
+:alias player-move          ve
+:alias is-player-move-valid vd
+
+:const UP    0
+:const LEFT  2
+:const DOWN  1
+:const RIGHT 3
+
+:const K-UP    5
+:const K-LEFT  7
+:const K-DOWN  8
+:const K-RIGHT 9
+
+: display-board
+	clear
+	v1 := 2 # x position
+	v2 := 2 # y position
+	v3 := 0  # board index
+
+	loop
+		i := board
+		i += v3
+		load v0
+		i := hex v0
+		sprite v1 v2 5
+		v3 += 1
+		v1 += 6
+		if v1 > 22 begin
+			v2 += 6
+			v1 := 2
+		end
+	if v3 != 16 then again
+	
+	return
+
+: get-player-move
+	return
+
+: check-player-move
+	return
+
+: make-move
+	return
+
+: main
+	display-board
+	: game-loop
+		get-player-move
+		check-player-move
+		if is-player-move-valid == 0 then jump game-loop
+		make-move
+		display-board
+	jump game-loop
+
+: board
+	 1  2  3  4
+	 5  6  7  8
+	 9 10 11 12
+	13 14 15  0
