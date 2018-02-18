@@ -20,7 +20,7 @@
 		v8 := v3
 		v8 += 1
 		get-tile-coordinates
-		if v3 != blank-index then display-block
+		if v3 != blank-index then display-tile
 		v3 += 1
 	if v3 != 16 then again
 	
@@ -29,7 +29,7 @@
 : animate-move
 	# assign index of tile that is sliding to v3
 	# blank-index by now has been reassigned to the new blank spot
-	# which is where the sliding block currently resides
+	# which is where the sliding tile currently resides
 	v3 := blank-index
 	if player-move == UP begin
 		v0 := 4
@@ -55,7 +55,7 @@
 
 	# do actual animation
 	get-tile-coordinates
-	display-block
+	display-tile
 	v6 := 0
 	v7 := 1
 	loop
@@ -64,13 +64,13 @@
 		if player-move == LEFT then v1 -= v6
 		if player-move == DOWN then v2 += v6
 		if player-move == RIGHT then v1 += v6
-		display-block
+		display-tile
 		v0 := 2
 		delay := v0
 		loop
 			v0 := delay
 		if v0 != 0 then again
-		display-block
+		display-tile
 		v6 += v7
 	if v6 != 8 then again
 	get-tile-coordinates
@@ -78,7 +78,7 @@
 	if player-move == LEFT then v1 -= v6
 	if player-move == DOWN then v2 += v6
 	if player-move == RIGHT then v1 += v6
-	display-block
+	display-tile
 
 	return
 	
@@ -87,7 +87,7 @@
 # parameters: v2 - y position
 # parameters: v3 - board index
 # parameters: v8 - tile value
-: display-block
+: display-tile
 	i := tile
 	sprite v1 v2 7
 
