@@ -77,22 +77,23 @@
 	is-player-move-valid := 1
 
 	if player-move == UP begin
+		if blank-index > 11 then is-player-move-valid := 0
 		if blank-index < 4 then is-player-move-valid := 0
 	end
 	if player-move == LEFT begin
 		v0 := blank-index
 		v1 := 0b11
 		v0 &= v1
-		if v0 == 0 then is-player-move-valid := 0
+		if v0 == 3 then is-player-move-valid := 0
 	end
 	if player-move == DOWN begin
-		if blank-index > 11 then is-player-move-valid := 0
+		if blank-index < 4 then is-player-move-valid := 0
 	end
 	if player-move == RIGHT begin
 		v0 := blank-index
 		v1 := 0b11
 		v0 &= v1
-		if v0 == 3 then is-player-move-valid := 0
+		if v0 == 0 then is-player-move-valid := 0
 	end
 
 	return
@@ -101,7 +102,7 @@
 	if player-move == UP begin
 		v1 := blank-index
 		v2 := 4
-		v1 -= v2
+		v1 += v2
 		i := board
 		i += v1
 		load v0
@@ -112,11 +113,27 @@
 		i := board
 		i += v1
 		save v0
-		blank-index -= v2
+		blank-index += v2
 	end
 	if player-move == LEFT begin
 		v1 := blank-index
 		v2 := 1
+		v1 += v2
+		i := board
+		i += v1
+		load v0
+		i := board
+		i += blank-index
+		save v0
+		v0 := 0
+		i := board
+		i += v1
+		save v0
+		blank-index += v2
+	end
+	if player-move == DOWN begin
+		v1 := blank-index
+		v2 := 4
 		v1 -= v2
 		i := board
 		i += v1
@@ -130,26 +147,10 @@
 		save v0
 		blank-index -= v2
 	end
-	if player-move == DOWN begin
-		v1 := blank-index
-		v2 := 4
-		v1 += v2
-		i := board
-		i += v1
-		load v0
-		i := board
-		i += blank-index
-		save v0
-		v0 := 0
-		i := board
-		i += v1
-		save v0
-		blank-index += v2
-	end
 	if player-move == RIGHT begin
 		v1 := blank-index
 		v2 := 1
-		v1 += v2
+		v1 -= v2
 		i := board
 		i += v1
 		load v0
@@ -160,7 +161,7 @@
 		i := board
 		i += v1
 		save v0
-		blank-index += v2
+		blank-index -= v2
 	end
 
 	return
