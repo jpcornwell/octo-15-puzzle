@@ -14,42 +14,137 @@
 
 : display-board
 	clear
-	v1 := 2 # x position
-	v2 := 0 # y position
 	v3 := 0  # board index
 
 	loop
-		display-block
+		v8 := v3
+		v8 += 1
+		get-tile-coordinates
+		if v3 != blank-index then display-block
 		v3 += 1
-		v1 += 8
-		if v1 > 30 begin
-			v2 += 8
-			v1 := 2
-		end
 	if v3 != 16 then again
 	
 	return
 
+: animate-move
+	# assign index of tile that is sliding to v3
+	# blank-index by now has been reassigned to the new blank spot
+	# which is where the sliding block currently resides
+	v3 := blank-index
+	if player-move == UP begin
+		v0 := 4
+		v3 -= v0
+	end
+	if player-move == LEFT begin
+		v0 := 1
+		v3 -= v0
+	end
+	if player-move == DOWN begin
+		v0 := 4
+		v3 += v0
+	end
+	if player-move == RIGHT begin
+		v0 := 1
+		v3 += v0
+	end
+	i := board
+	i += v3
+	load v0
+	v8 := v0
+	v3 := blank-index
+
+	# do actual animation
+	get-tile-coordinates
+	display-block
+	v6 := 0
+	v7 := 1
+	loop
+		get-tile-coordinates
+		if player-move == UP then v2 -= v6
+		if player-move == LEFT then v1 -= v6
+		if player-move == DOWN then v2 += v6
+		if player-move == RIGHT then v1 += v6
+		display-block
+		v0 := 2
+		delay := v0
+		loop
+			v0 := delay
+		if v0 != 0 then again
+		display-block
+		v6 += v7
+	if v6 != 8 then again
+	get-tile-coordinates
+	if player-move == UP then v2 -= v6
+	if player-move == LEFT then v1 -= v6
+	if player-move == DOWN then v2 += v6
+	if player-move == RIGHT then v1 += v6
+	display-block
+
+	return
+	
+
 # parameters: v1 - x position
 # parameters: v2 - y position
 # parameters: v3 - board index
+# parameters: v8 - tile value
 : display-block
-	if v3 != blank-index begin
-		i := tile
-		sprite v1 v2 7
+	i := tile
+	sprite v1 v2 7
 
-		v0 := 1
-		v1 += v0
-		v2 += v0
-		i := board
-		i += v3
-		load v0
-		i := hex v0
-		sprite v1 v2 5
-		v0 := 1
-		v1 -= v0
-		v2 -= v0
+	v0 := 1
+	v1 += v0
+	v2 += v0
+	i := hex v8
+	sprite v1 v2 5
+	v0 := 1
+	v1 -= v0
+	v2 -= v0
+	
+	return
+
+# parameters: v3 - board index
+# returns:    v1 - x position
+# returns:    v2 - y position
+: get-tile-coordinates
+	v0 := 0b11
+	
+	# find x coordinate
+	v0 &= v3
+	v4 := 0
+	if v0 == v4 then v1 := 2
+
+	v0 &= v3
+	v4 := 1
+	if v0 == v4 then v1 := 10
+
+	v0 &= v3
+	v4 := 2
+	if v0 == v4 then v1 := 18
+
+	v0 &= v3
+	v4 := 3
+	if v0 == v4 then v1 := 26
+
+	# find y coordinate
+	v4 := 4
+	if v3 < v4 begin
+		v2 := 0
+		return
 	end
+
+	v4 := 8
+	if v3 < v4 begin
+		v2 := 8
+		return
+	end
+
+	v4 := 12
+	if v3 < v4 begin
+		v2 := 16
+		return
+	end
+
+	v2 := 24
 	return
 
 : get-player-move
@@ -166,6 +261,7 @@
 	return
 
 : main
+	hires
 	blank-index := 15
 	display-board
 	: game-loop
@@ -173,7 +269,7 @@
 		check-player-move
 		if is-player-move-valid == 0 then jump game-loop
 		make-move
-		display-board
+		animate-move
 	jump game-loop
 
 : tile
