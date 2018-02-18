@@ -78,7 +78,6 @@
 
 	if player-move == UP begin
 		if blank-index > 11 then is-player-move-valid := 0
-		if blank-index < 4 then is-player-move-valid := 0
 	end
 	if player-move == LEFT begin
 		v0 := blank-index
