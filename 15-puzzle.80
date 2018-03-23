@@ -260,10 +260,38 @@
 
 	return
 
+: shuffle-board
+	v5 := 50 # loop counter
+	v6 := DOWN # keep track of previous move so you don't slide a piece back to where it started
+		   # just start it with something so that the first move can be down or right
+	: shuffle-loop
+		player-move := random 0b11
+		check-player-move
+		if is-player-move-valid == 0 then jump shuffle-loop
+		if player-move == UP begin
+			if v6 == DOWN then jump shuffle-loop
+		end
+		if player-move == DOWN begin
+			if v6 == UP then jump shuffle-loop
+		end
+		if player-move == LEFT begin
+			if v6 == RIGHT then jump shuffle-loop
+		end
+		if player-move == RIGHT begin
+			if v6 == LEFT then jump shuffle-loop
+		end
+		make-move
+		animate-move
+		v5 += -1
+		v6 := player-move
+	if v5 != 0 then jump shuffle-loop
+	return
+
 : main
 	hires
 	blank-index := 15
 	display-board
+	shuffle-board
 	: game-loop
 		get-player-move
 		check-player-move
