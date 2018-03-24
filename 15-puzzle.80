@@ -1,6 +1,7 @@
-:alias player-move          vd
-:alias is-player-move-valid vc
-:alias blank-index          vb
+:alias player-move           vd
+:alias is-player-move-valid  vc
+:alias blank-index           vb
+:alias block-animation-speed v7
 
 :const UP    0
 :const LEFT  2
@@ -57,7 +58,6 @@
 	get-tile-coordinates
 	display-tile
 	v6 := 0
-	v7 := 1
 	loop
 		get-tile-coordinates
 		if player-move == UP then v2 -= v6
@@ -71,8 +71,8 @@
 			v0 := delay
 		if v0 != 0 then again
 		display-tile
-		v6 += v7
-	if v6 != 8 then again
+		v6 += block-animation-speed
+	if v6 != 16 then again
 	get-tile-coordinates
 	if player-move == UP then v2 -= v6
 	if player-move == LEFT then v1 -= v6
@@ -89,7 +89,7 @@
 # parameters: v8 - tile value
 : display-tile
 	i := tile
-	sprite v1 v2 7
+	sprite v1 v2 0
 
 	v0 := 1
 	v1 += v0
@@ -115,36 +115,36 @@
 
 	v0 &= v3
 	v4 := 1
-	if v0 == v4 then v1 := 10
-
-	v0 &= v3
-	v4 := 2
 	if v0 == v4 then v1 := 18
 
 	v0 &= v3
+	v4 := 2
+	if v0 == v4 then v1 := 34
+
+	v0 &= v3
 	v4 := 3
-	if v0 == v4 then v1 := 26
+	if v0 == v4 then v1 := 50
 
 	# find y coordinate
 	v4 := 4
 	if v3 < v4 begin
-		v2 := 0
+		v2 := 1
 		return
 	end
 
 	v4 := 8
 	if v3 < v4 begin
-		v2 := 8
+		v2 := 17
 		return
 	end
 
 	v4 := 12
 	if v3 < v4 begin
-		v2 := 16
+		v2 := 33
 		return
 	end
 
-	v2 := 24
+	v2 := 49
 	return
 
 : get-player-move
@@ -261,6 +261,7 @@
 	return
 
 : shuffle-board
+	block-animation-speed := 4
 	v5 := 50 # loop counter
 	v6 := DOWN # keep track of previous move so you don't slide a piece back to where it started
 		   # just start it with something so that the first move can be down or right
@@ -285,6 +286,7 @@
 		v5 += -1
 		v6 := player-move
 	if v5 != 0 then jump shuffle-loop
+	block-animation-speed := 2
 	return
 
 : main
@@ -301,13 +303,22 @@
 	jump game-loop
 
 : tile
-	0b11111110
-	0b11111110
-	0b11111110
-	0b11111110
-	0b11111110
-	0b11111110
-	0b11111110
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b11111111 0b11111100
+	0b00000000 0b00000000
+	0b00000000 0b00000000
 
 : board
 	 1  2  3  4
